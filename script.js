@@ -7,8 +7,36 @@
 */
 
 document.addEventListener("DOMContentLoaded", () => {
+  // Mostrar indicador de carga
+  function showLoading() {
+    const loadingHTML = `
+      <div class="loading-container" id="loading-indicator">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Cargando mapa interactivo...</div>
+      </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', loadingHTML);
+  }
+
+  // Ocultar indicador de carga
+  function hideLoading() {
+    const loading = document.getElementById('loading-indicator');
+    if (loading) {
+      loading.style.opacity = '0';
+      setTimeout(() => loading.remove(), 300);
+    }
+  }
+
+  // Detectar si es dispositivo móvil
+  function isMobile() {
+    return window.innerWidth <= 768;
+  }
+
+  showLoading();
+
   if (typeof d3 === "undefined") {
     console.error("D3 no está cargado. Comprueba la inclusión de d3.v7.min.js en index.htm");
+    hideLoading();
     return;
   }
 
@@ -181,13 +209,17 @@ document.addEventListener("DOMContentLoaded", () => {
     const computedHeight = Math.max(BASE_SVG_HEIGHT, (maxPerDepth + 2) * nodeVerticalSpacing * 1.6);
 
     svg.attr("viewBox", `0 0 ${SVG_WIDTH} ${computedHeight}`);
-    treeLayout.size([computedHeight, SVG_WIDTH - 420]);
+    
+    // Ajustar para móviles
+    const mobileOffset = isMobile() ? 100 : 420;
+    treeLayout.size([computedHeight, SVG_WIDTH - mobileOffset]);
 
     const treeData = treeLayout(root);
     const nodes = treeData.descendants();
     const links = treeData.descendants().slice(1);
 
-    nodes.forEach(d => { d.y = d.depth * 220; });
+    const mobileSpacing = isMobile() ? 150 : 220;
+    nodes.forEach(d => { d.y = d.depth * mobileSpacing; });
 
     // LINKS
     const link = g.selectAll("path.link")
@@ -269,6 +301,33 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     panel.html("");
+    
+    // Añadir botón de cierre para móviles
+    if (isMobile()) {
+      panel.classed("active", true);
+      const closeBtn = panel.append("div")
+        .attr("class", "close-btn")
+        .style("position", "absolute")
+        .style("top", "15px")
+        .style("right", "15px")
+        .style("width", "30px")
+        .style("height", "30px")
+        .style("background", "#004d40")
+        .style("color", "white")
+        .style("border-radius", "50%")
+        .style("display", "flex")
+        .style("align-items", "center")
+        .style("justify-content", "center")
+        .style("cursor", "pointer")
+        .style("font-size", "16px")
+        .style("font-weight", "bold")
+        .style("z-index", "1001")
+        .text("✕")
+        .on("click", () => {
+          panel.classed("active", false);
+        });
+    }
+
     panel.append("h3").text(d.data.title || "Sin título");
     panel.append("p").html(`<strong>Explicación:</strong> ${d.data.explanation || "No aplica"}`);
     panel.append("p").html(`<strong>Analogía Actual (circunstancia concreta):</strong> ${d.data.current_analogy || d.data.currentAnalogy || "No aplica"}`);
@@ -285,4 +344,9 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
   }
+
+  // Ocultar indicador de carga después de la primera renderización
+  setTimeout(() => {
+    hideLoading();
+  }, 1000);
 });
