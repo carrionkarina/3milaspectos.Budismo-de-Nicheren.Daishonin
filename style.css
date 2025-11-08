@@ -1,0 +1,88 @@
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background: #fffaf0;
+  color: #222;
+  position: relative;
+  font-size: 16px; /* base más grande */
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background-color: #f4f4f9;
+}
+
+h1 {
+    color: #004d40; /* Verde oscuro */
+    text-align: center;
+    margin-top: 12px;
+    font-size: 2rem; /* título principal más grande */
+}
+
+.intro-explanation {
+    text-align: center;
+    max-width: 900px;
+    margin: 0.5rem auto 1.2rem;
+    font-size: 1.05rem;
+}
+
+/* Estilos para el lienzo SVG */
+#mindmap-container {
+  display: block;
+  width: 100%;
+  height: calc(100vh - 140px);
+  border: 0;
+  box-sizing: border-box;
+  background: #fff;
+}
+
+/* tamaño y estilo para textos del SVG (fallback si D3 no fija tamaños) */
+#mindmap-container text {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  fill: #222;
+}
+
+/* Los estilos para los nodos del mapa (que creará D3) van aquí */
+.node circle {
+    fill: #009688; /* Color principal */
+    stroke: steelblue;
+    stroke-width: 3px;
+    cursor: pointer; /* Para indicar que son clicables */
+}
+
+.link {
+    fill: none;
+    stroke: #ccc;
+    stroke-width: 2px;
+}
+
+/* panel de detalles */
+.details-panel {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 14px;
+  background: #fff;
+  border: 1px solid #ccc;
+  max-width: 420px;
+  max-height: calc(100vh - 40px);
+  overflow: auto;
+  box-shadow: 2px 2px 10px rgba(0,0,0,0.12);
+  font-size: 15px;
+  line-height: 1.4;
+  z-index: 10;
+}
+
+.details-panel h3 {
+  margin: 0 0 8px 0;
+  font-size: 20px;
+}
+
+.details-panel h4 {
+  margin: 10px 0 6px 0;
+  font-size: 16px;
+}
+
+.details-panel p { margin: 6px 0; font-size: 14px; }
